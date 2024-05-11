@@ -4,13 +4,18 @@
 #include "hash_map.h"
 
 int main() {
-	KeyValVec vec = KeyValVec_init();
+	HashMap map = HashMap_init();
 	KeyVal test;
+
 	test.key = "i am key";
 	test.val = "i am value";
-	KeyValVec_append(&vec, test);
-	test.key = "new key";
-	KeyValVec_append(&vec, test);
-	KeyValVec_print(vec);
-}
 
+	HashMap_add(&map, test);
+	HashMap_print(map);
+
+	test.key = "gaaaaa";
+	test.val = "jkndsjsaaaaaaak";
+
+	HashMap_add(&map, test);
+	HashMap_print(map);
+}

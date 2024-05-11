@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "hash_map.h"
 
@@ -38,10 +39,20 @@ KeyVal KeyValVec_get(KeyValVec vec, int index) {
 }
 
 void KeyValVec_append(KeyValVec* vec, KeyVal to_append) {
-	vec->size = vec->size + sizeof(to_append.key) + sizeof(to_append.val);
+	vec->size += (sizeof(to_append.key ) + sizeof(to_append.val)) * sizeof(char);
+
 	vec->ptr = realloc(vec->ptr, vec->size);
 	vec->ptr[vec->len] = to_append;
 	vec->len += 1;
+}
+
+bool KeyValVec_contains(KeyValVec vec, KeyVal check) {
+    for (size_t i = 0; i < vec.len; i++) {
+        if (vec.ptr[i].key == check.key && vec.ptr[i].val == check.val) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void KeyValVec_print(KeyValVec vec) {
@@ -71,6 +82,21 @@ HashMap HashMap_init() {
 	return to_ret;
 }
 
+void HashMap_print(HashMap map) {
+    for (size_t i = 0; i < map.len; i++) {
+        KeyValVec_print(map.ptr[i]);
+    }
+    printf("\n"); 
+}
+
+void HashMap_add(HashMap* map, KeyVal element) {
+    map->len += 1;
+    map->size += 8;
+    int place = HashMap_HashAndMod(*map, element.key);
+    map->ptr = realloc(map->ptr, map->size);
+    KeyValVec_append(&map->ptr[place], element);
+}
+
 int HashMap_HashAndMod(HashMap map, unsigned char *str) {
-	return (int)(hash(str) % map.size);
+	return (int)(hash(str) % map.len);
 }
