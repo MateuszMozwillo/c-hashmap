@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "hash_map.h"
 
@@ -39,7 +40,7 @@ KeyVal KeyValVec_get(KeyValVec vec, int index) {
 }
 
 void KeyValVec_append(KeyValVec* vec, KeyVal to_append) {
-	vec->size += (sizeof(to_append.key ) + sizeof(to_append.val)) * sizeof(char);
+	vec->size += sizeof(KeyVal) + strlen(to_append.key ) + strlen(to_append.val) + 1;
 
 	vec->ptr = realloc(vec->ptr, vec->size);
 	vec->ptr[vec->len] = to_append;
@@ -75,7 +76,7 @@ void KeyValVec_print(KeyValVec vec) {
 HashMap HashMap_init() {
 	HashMap to_ret;
 
-	to_ret.len = 0;
+	to_ret.len = 10;
 	to_ret.size = 1;
 	to_ret.ptr = malloc(1);
 
@@ -90,12 +91,13 @@ void HashMap_print(HashMap map) {
 }
 
 void HashMap_add(HashMap* map, KeyVal element) {
-    map->len += 1;
-    map->size += 8;
     int place = HashMap_HashAndMod(*map, element.key);
+    map->size = sizeof(KeyValVec) * map->len;
     map->ptr = realloc(map->ptr, map->size);
     KeyValVec_append(&map->ptr[place], element);
 }
+
+// char* HashMap_get()
 
 int HashMap_HashAndMod(HashMap map, unsigned char *str) {
 	return (int)(hash(str) % map.len);

@@ -5,17 +5,16 @@
 
 int main() {
 	HashMap map = HashMap_init();
-	KeyVal test;
 
-	test.key = "i am key";
-	test.val = "i am value";
-
-	HashMap_add(&map, test);
+	HashMap_add(&map, (KeyVal){"asd", "dsa"});
 	HashMap_print(map);
 
-	test.key = "gaaaaa";
-	test.val = "jkndsjsaaaaaaak";
+	HashMap_add(&map, (KeyVal){"sd", "dsa"});
+	HashMap_print(map);
 
-	HashMap_add(&map, test);
+	HashMap_add(&map, (KeyVal){"axxxxis", "dsa"});
+	HashMap_print(map);
+
+	HashMap_add(&map, (KeyVal){"wawwawawawaw", "dsa"});
 	HashMap_print(map);
 }
