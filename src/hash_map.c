@@ -40,7 +40,7 @@ KeyVal KeyValVec_get(KeyValVec vec, int index) {
 }
 
 void KeyValVec_append(KeyValVec* vec, KeyVal to_append) {
-	vec->size += sizeof(KeyVal) + strlen(to_append.key ) + strlen(to_append.val) + 1;
+	vec->size += sizeof(KeyVal) + strlen(to_append.key ) + strlen(to_append.val) + 2;
 
 	vec->ptr = realloc(vec->ptr, vec->size);
 	vec->ptr[vec->len] = to_append;
@@ -86,6 +86,10 @@ HashMap HashMap_init() {
     to_ret.ptr = malloc(to_ret.size);
 	to_ret.element_num = 0;
 
+	for (size_t i = 0; i < to_ret.capacity; i++) {
+		to_ret.ptr[i] = KeyValVec_init();
+	}
+
 	return to_ret;
 }
 
@@ -115,7 +119,8 @@ char* HashMap_get(HashMap map, char* key) {
 void HashMap_add(HashMap* map, KeyVal element) {
 
 	if ( map->capacity <= map->element_num ) {
-		HashMap_resize(map, map->capacity + ADD_ON_RESIZE);
+		// HashMap_resize(map, map->capacity + ADD_ON_RESIZE);
+		HashMap_clean_and_resize(map, map->capacity + ADD_ON_RESIZE);
 	}
 
     int place = HashMap_hash_and_mod(*map, element.key);
@@ -132,8 +137,7 @@ void HashMap_add(HashMap* map, KeyVal element) {
 	}
 }
 
-void HashMap_resize(HashMap* map, size_t new_size) {
-
+void HashMap_clean_and_resize(HashMap* map, size_t new_size) {
 	KeyValVec old_hashed_key_vals = KeyValVec_init();
 
 	for (size_t i = 0; i < map->capacity; i++) {
@@ -142,15 +146,17 @@ void HashMap_resize(HashMap* map, size_t new_size) {
 		}	
 	}
 
-	for (size_t i = 0; i < map->capacity; i++) {
-		free(map->ptr[i].ptr);
-	}
+	HashMap_free(map);
 
 	map->capacity = new_size;
 	map->size = sizeof(KeyValVec) * map->capacity;
     map->ptr = malloc(map->size);
 
 	map->element_num = 0;
+
+	for (size_t i = 0; i < map->capacity; i++) {
+		map->ptr[i] = KeyValVec_init();
+	}
 
 	for (size_t i = 0; i < old_hashed_key_vals.len; i++) {
 		HashMap_add(map, old_hashed_key_vals.ptr[i]);
@@ -159,7 +165,7 @@ void HashMap_resize(HashMap* map, size_t new_size) {
 	free(old_hashed_key_vals.ptr);
 }
 
-void HashMap_delete(HashMap* map) {
+void HashMap_free(HashMap* map) {
 	for (size_t i = 0; i < map->capacity; i++) {
 		free(map->ptr[i].ptr);
 	}

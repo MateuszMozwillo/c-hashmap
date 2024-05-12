@@ -1,26 +1,30 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "hash_map.h"
 
 int main() {
 	HashMap map = HashMap_init();
+	KeyValVec vec = KeyValVec_init();
 
-	HashMap_add(&map, (KeyVal){"white", "cat"});
-	HashMap_add(&map, (KeyVal){"porsche", "car"});
-	HashMap_add(&map, (KeyVal){"2017", "year"});
+	KeyValVec_append(&vec, (KeyVal){"white", "cat"});
+	KeyValVec_append(&vec, (KeyVal){"porsche", "car"});
+	KeyValVec_append(&vec, (KeyVal){"2017", "year"});
+	KeyValVec_append(&vec, (KeyVal){"black", "dog"});
+	KeyValVec_append(&vec, (KeyVal){"yellow", "color"});
+	KeyValVec_append(&vec, (KeyVal){"c", "language"});
+	KeyValVec_append(&vec, (KeyVal){"rust", "language"});
+	KeyValVec_append(&vec, (KeyVal){"minecraft", "game"});
+	KeyValVec_append(&vec, (KeyVal){"list", "data type"});
 
-	HashMap_add(&map, (KeyVal){"black", "dog"});
-	HashMap_add(&map, (KeyVal){"yellow", "color"});
-	HashMap_add(&map, (KeyVal){"c", "language"});
-
-	HashMap_add(&map, (KeyVal){"rust", "language"});
-	HashMap_add(&map, (KeyVal){"minecraft", "game"});
-	HashMap_add(&map, (KeyVal){"list", "data type"});
-
+	for (size_t i = 0; i < vec.len; i++) {
+		HashMap_add(&map, vec.ptr[i]);
+	}
+	
 	HashMap_print(map);
 
-	printf("%s\n", HashMap_get(map, "rust"));
+	printf("key: %s, val: %s\n", "minecraft", HashMap_get(map, "minecraft"));
 
-	HashMap_delete(&map);
+	HashMap_free(&map);
 }
