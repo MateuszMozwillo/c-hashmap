@@ -5,7 +5,7 @@
 
 #include "hash_map.h"
 
-#define RESIZE_ADD 7
+#define ADD_ON_RESIZE 7
 
 unsigned long hash(unsigned char *str) {
     unsigned long hash = 5381;
@@ -115,7 +115,7 @@ char* HashMap_get(HashMap map, char* key) {
 void HashMap_add(HashMap* map, KeyVal element) {
 
 	if ( map->capacity <= map->element_num ) {
-		HashMap_resize(map, map->capacity + RESIZE_ADD);
+		HashMap_resize(map, map->capacity + ADD_ON_RESIZE);
 	}
 
     int place = HashMap_hash_and_mod(*map, element.key);
