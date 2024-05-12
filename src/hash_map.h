@@ -8,16 +8,15 @@ typedef struct KeyVal {
 
 typedef struct KeyValVec {
 	KeyVal* ptr;
-	int len;
-	int size;
+	size_t len;
+	size_t size;
 } KeyValVec;
 
 typedef struct HashMap {
-
 	KeyValVec* ptr;
-	int len;
-	int size;
-
+	size_t element_num;
+	size_t capacity;
+	size_t size;
 } HashMap;
 
 unsigned long hash(unsigned char *str);
@@ -45,5 +44,7 @@ int HashMap_hash_and_mod(HashMap map, unsigned char *str);
 void HashMap_print(HashMap map);
 
 char* HashMap_get(HashMap map, char* key);
+
+void HashMap_resize(HashMap* map, size_t new_size);
 
 void HashMap_add(HashMap* map, KeyVal element);

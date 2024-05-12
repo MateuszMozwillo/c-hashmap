@@ -5,6 +5,8 @@
 
 #include "hash_map.h"
 
+#define RESIZE_ADD 7
+
 unsigned long hash(unsigned char *str) {
     unsigned long hash = 5381;
     int c;
@@ -79,33 +81,19 @@ void KeyValVec_print(KeyValVec vec) {
 HashMap HashMap_init() {
 	HashMap to_ret;
 
-	to_ret.len = 10;
-	to_ret.size = 1;
-	to_ret.ptr = malloc(1);
+	to_ret.capacity = 11;
+	to_ret.size = sizeof(KeyValVec) * to_ret.capacity;
+    to_ret.ptr = malloc(to_ret.size);
+	to_ret.element_num = 0;
 
 	return to_ret;
 }
 
 void HashMap_print(HashMap map) {
-    for (size_t i = 0; i < map.len; i++) {
+    for (size_t i = 0; i < map.capacity; i++) {
         KeyValVec_print(map.ptr[i]);
     }
     printf("\n"); 
-}
-
-void HashMap_add(HashMap* map, KeyVal element) {
-    int place = HashMap_hash_and_mod(*map, element.key);
-    map->size = sizeof(KeyValVec) * map->len;
-    map->ptr = realloc(map->ptr, map->size);
-	if (!KeyValVec_contains_key(map->ptr[place], element.key)) {
-    	KeyValVec_append(&map->ptr[place], element);
-	} else {
-		for (size_t i = 0; i < map->ptr[place].len; i++) {
-			if (map->ptr[place].ptr[i].key == element.key) {
-				map->ptr[place].ptr[i].val = element.val;
-			}
-		}	
-	}
 }
 
 char* HashMap_get(HashMap map, char* key) {
@@ -124,6 +112,53 @@ char* HashMap_get(HashMap map, char* key) {
 	return 0;
 }
 
+void HashMap_add(HashMap* map, KeyVal element) {
+
+	if ( map->capacity <= map->element_num ) {
+		HashMap_resize(map, map->capacity + RESIZE_ADD);
+	}
+
+    int place = HashMap_hash_and_mod(*map, element.key);
+
+	if (!KeyValVec_contains_key(map->ptr[place], element.key)) {
+    	KeyValVec_append(&map->ptr[place], element);
+		map->element_num += 1;
+	} else {
+		for (size_t i = 0; i < map->ptr[place].len; i++) {
+			if (map->ptr[place].ptr[i].key == element.key) {
+				map->ptr[place].ptr[i].val = element.val;
+			}
+		}	
+	}
+}
+
+void HashMap_resize(HashMap* map, size_t new_size) {
+
+	KeyValVec old_hashed_key_vals = KeyValVec_init();
+
+	for (size_t i = 0; i < map->capacity; i++) {
+		for (size_t j = 0; j < map->ptr[i].len; j++) {
+			KeyValVec_append(&old_hashed_key_vals, map->ptr[i].ptr[j]);
+		}	
+	}
+
+	for (size_t i = 0; i < map->capacity; i++) {
+		free(map->ptr[i].ptr);
+	}
+
+	map->capacity = new_size;
+	map->size = sizeof(KeyValVec) * map->capacity;
+    map->ptr = malloc(map->size);
+
+	map->element_num = 0;
+
+	for (size_t i = 0; i < old_hashed_key_vals.len; i++) {
+		HashMap_add(map, old_hashed_key_vals.ptr[i]);
+	}
+	
+	free(old_hashed_key_vals.ptr);
+}
+
 int HashMap_hash_and_mod(HashMap map, unsigned char *str) {
-	return (int)(hash(str) % map.len);
+	return (int)(hash(str) % map.capacity);
 }
