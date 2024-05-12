@@ -31,4 +31,6 @@ int main() {
 	HashMap_print(map);
 
 	printf("%s\n", HashMap_get(map, "was"));
+
+	HashMap_delete(&map);
 }

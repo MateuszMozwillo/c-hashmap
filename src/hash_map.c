@@ -159,6 +159,13 @@ void HashMap_resize(HashMap* map, size_t new_size) {
 	free(old_hashed_key_vals.ptr);
 }
 
+void HashMap_delete(HashMap* map) {
+	for (size_t i = 0; i < map->capacity; i++) {
+		free(map->ptr[i].ptr);
+	}
+	free(map->ptr);
+}
+
 int HashMap_hash_and_mod(HashMap map, unsigned char *str) {
 	return (int)(hash(str) % map.capacity);
 }

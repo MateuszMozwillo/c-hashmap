@@ -47,4 +47,6 @@ char* HashMap_get(HashMap map, char* key);
 
 void HashMap_resize(HashMap* map, size_t new_size);
 
+void HashMap_delete(HashMap* map);
+
 void HashMap_add(HashMap* map, KeyVal element);
