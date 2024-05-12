@@ -6,31 +6,21 @@
 int main() {
 	HashMap map = HashMap_init();
 
-	HashMap_add(&map, (KeyVal){"asd", "1"});
-	HashMap_add(&map, (KeyVal){"sd", "2"});
-	HashMap_add(&map, (KeyVal){"ds", "2"});
+	HashMap_add(&map, (KeyVal){"white", "cat"});
+	HashMap_add(&map, (KeyVal){"porsche", "car"});
+	HashMap_add(&map, (KeyVal){"2017", "year"});
+
+	HashMap_add(&map, (KeyVal){"black", "dog"});
+	HashMap_add(&map, (KeyVal){"yellow", "color"});
+	HashMap_add(&map, (KeyVal){"c", "language"});
+
+	HashMap_add(&map, (KeyVal){"rust", "language"});
+	HashMap_add(&map, (KeyVal){"minecraft", "game"});
+	HashMap_add(&map, (KeyVal){"list", "data type"});
 
 	HashMap_print(map);
 
-	HashMap_add(&map, (KeyVal){"sd", "3"});
-	HashMap_add(&map, (KeyVal){"axxxxis", "3"});
-	HashMap_add(&map, (KeyVal){"wawwawawawaw", "4"});
-
-	HashMap_print(map);
-
-	HashMap_add(&map, (KeyVal){"wawxxawawaw", "4"});
-	HashMap_add(&map, (KeyVal){"wawwawsadfxxawawaw", "4"});
-	HashMap_add(&map, (KeyVal){"was", "4"});
-	HashMap_add(&map, (KeyVal){"dog", "4"});
-
-	HashMap_add(&map, (KeyVal){"wawwaw", "4"});
-	HashMap_add(&map, (KeyVal){"wadfxxawawaw", "4"});
-	HashMap_add(&map, (KeyVal){"w", "4"});
-	HashMap_add(&map, (KeyVal){"dg", "4"});
-
-	HashMap_print(map);
-
-	printf("%s\n", HashMap_get(map, "was"));
+	printf("%s\n", HashMap_get(map, "rust"));
 
 	HashMap_delete(&map);
 }
