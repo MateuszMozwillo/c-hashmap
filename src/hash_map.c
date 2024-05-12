@@ -15,12 +15,10 @@ unsigned long hash(unsigned char *str) {
     return hash;
 }
 
-//prints KeyVal struct with new line
 void KeyVal_println(KeyVal to_print) {
 	printf("('%s', '%s')\n", to_print.key, to_print.val);
 }
 
-//prints KeyVal struct without new line
 void KeyVal_print(KeyVal to_print) {
 	printf("('%s', '%s')", to_print.key, to_print.val);
 }
@@ -56,10 +54,17 @@ bool KeyValVec_contains(KeyValVec vec, KeyVal check) {
     return false;
 }
 
+bool KeyValVec_contains_key(KeyValVec vec, char* key) {
+    for (size_t i = 0; i < vec.len; i++) {
+        if (vec.ptr[i].key == key) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void KeyValVec_print(KeyValVec vec) {
-	
 	printf("[ ");
-	
 	for (size_t i = 0; i < vec.len; i++) {
 		
 		KeyVal_print(vec.ptr[i]);
@@ -68,9 +73,7 @@ void KeyValVec_print(KeyValVec vec) {
 			printf(", ");
 		}
 	}
-
 	printf(" ]\n");
-
 }
 
 HashMap HashMap_init() {
@@ -91,14 +94,36 @@ void HashMap_print(HashMap map) {
 }
 
 void HashMap_add(HashMap* map, KeyVal element) {
-    int place = HashMap_HashAndMod(*map, element.key);
+    int place = HashMap_hash_and_mod(*map, element.key);
     map->size = sizeof(KeyValVec) * map->len;
     map->ptr = realloc(map->ptr, map->size);
-    KeyValVec_append(&map->ptr[place], element);
+	if (!KeyValVec_contains_key(map->ptr[place], element.key)) {
+    	KeyValVec_append(&map->ptr[place], element);
+	} else {
+		for (size_t i = 0; i < map->ptr[place].len; i++) {
+			if (map->ptr[place].ptr[i].key == element.key) {
+				map->ptr[place].ptr[i].val = element.val;
+			}
+		}	
+	}
 }
 
-// char* HashMap_get()
+char* HashMap_get(HashMap map, char* key) {
+	int pos = HashMap_hash_and_mod(map, key);
+	if ( KeyValVec_contains_key(map.ptr[pos], key) ) {
+		if (map.ptr[pos].len == 1 &&map.ptr[pos].ptr[0].key == key) {
+			return map.ptr[pos].ptr[0].val;
+		} else {
+			for (size_t i = 0; i < map.ptr[pos].len; i++) {
+				if (map.ptr[pos].ptr[i].key == key) {
+					return map.ptr[pos].ptr[i].val;
+				}
+			}	
+		}
+	}
+	return 0;
+}
 
-int HashMap_HashAndMod(HashMap map, unsigned char *str) {
+int HashMap_hash_and_mod(HashMap map, unsigned char *str) {
 	return (int)(hash(str) % map.len);
 }

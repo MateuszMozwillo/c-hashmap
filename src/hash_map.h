@@ -40,8 +40,10 @@ void KeyValVec_print(KeyValVec vec);
 
 HashMap HashMap_init();
 
-int HashMap_HashAndMod(HashMap map, unsigned char *str);
+int HashMap_hash_and_mod(HashMap map, unsigned char *str);
 
 void HashMap_print(HashMap map);
+
+char* HashMap_get(HashMap map, char* key);
 
 void HashMap_add(HashMap* map, KeyVal element);
