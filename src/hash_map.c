@@ -8,13 +8,13 @@
 #define ADD_ON_RESIZE 7
 
 unsigned long hash(unsigned char *str) {
-    unsigned long hash = 5381;
-    int c;
+  unsigned long hash = 5381;
+  int c;
 
-    while (c = *str++)
-        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+  while (c = *str++)
+    hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
 
-    return hash;
+  return hash;
 }
 
 void KeyVal_println(KeyVal to_print) {
@@ -40,20 +40,20 @@ KeyVal KeyValVec_get(KeyValVec vec, int index) {
 }
 
 void KeyValVec_append(KeyValVec* vec, KeyVal to_append) {
-	vec->size += sizeof(KeyVal) + strlen(to_append.key ) + strlen(to_append.val) + 2;
+  vec->size += sizeof(KeyVal) + strlen(to_append.key ) + strlen(to_append.val) + 2;
 
-	vec->ptr = realloc(vec->ptr, vec->size);
-	vec->ptr[vec->len] = to_append;
-	vec->len += 1;
+  vec->ptr = realloc(vec->ptr, vec->size);
+  vec->ptr[vec->len] = to_append;
+  vec->len += 1;
 }
 
 bool KeyValVec_contains(KeyValVec vec, KeyVal check) {
-    for (size_t i = 0; i < vec.len; i++) {
-        if (vec.ptr[i].key == check.key && vec.ptr[i].val == check.val) {
-            return true;
-        }
+  for (size_t i = 0; i < vec.len; i++) {
+    if (vec.ptr[i].key == check.key && vec.ptr[i].val == check.val) {
+      return true;
     }
-    return false;
+  }
+  return false;
 }
 
 bool KeyValVec_contains_key(KeyValVec vec, char* key) {
